@@ -1,24 +1,22 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import predict_bp, predict_diabetes, predict_heart, auth
 
-# استيراد الرواتر
-from app.routes import auth, predict_bp
+app = FastAPI(title="Chronic Disease Prediction API")
 
-app = FastAPI(
-    title="Chronic Disease Risk API",
-    description="API to predict hypertension risk using AI model",
-    version="1.0"
-)
+origins = [
+    "*"
+]
 
-# إعدادات CORS عشان الفورنت يقدر يبعت requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ممكن تغير "*" للعنوان الحقيقي للفورنت
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/auth")        # أي endpoints لل authentication
-app.include_router(predict_bp.router, prefix="/predict")  # أي endpoints للـ hypertension prediction
+app.include_router(auth.router)
+app.include_router(predict_bp.router)
+app.include_router(predict_diabetes.router)
+app.include_router(predict_heart.router)

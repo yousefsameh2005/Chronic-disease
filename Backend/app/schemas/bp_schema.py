@@ -19,10 +19,16 @@ class HypertensionRecordCreate(BaseModel):
     diabetes: int
     tot_chol: float = Field(..., alias="totChol")
     heart_rate: float = Field(..., alias="heartRate")
+    morning_reading: Optional[float] = Field(None, alias="morningReading")
+    evening_reading: Optional[float] = Field(None, alias="eveningReading")
+    frequency_check: Optional[str] = Field(None, alias="frequencyCheck")
+    stress: str 
+    alcohol: str 
+    gender: str
     notes: Optional[str] = None
 
     class Config:
-        allow_population_by_field_name = True
+        validate_by_name = True
 
 class HypertensionPredictionResponse(BaseModel):
     probability: float

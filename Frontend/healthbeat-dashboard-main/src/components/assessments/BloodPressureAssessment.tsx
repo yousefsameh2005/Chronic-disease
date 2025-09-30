@@ -51,9 +51,9 @@ const BloodPressureAssessment: React.FC = () => {
     morningReading: "",
     eveningReading: "",
     frequencyCheck: "",
-    saltIntake: "",
-    physicalActivity: "",
-    stress: "",
+    saltIntake: "low",
+    physicalActivity: "moderate",
+    stress: "low",
     smoking: "no",
     alcohol: "none",
     familyHistory: "no",
@@ -86,8 +86,15 @@ const BloodPressureAssessment: React.FC = () => {
     return 0;
   };
 
+  const mapDietQuality = (v: string) => {
+    if (v === "excellent") return 3;
+    if (v === "good") return 2;
+    if (v === "average") return 1;
+    return 0;
+  };
+
   const buildPayload = () => {
-    const payload = {
+    return {
       age: Number.parseInt(formData.age || "0"),
       weight: Number.parseFloat(formData.weight || "0"),
       height: Number.parseFloat(formData.height || "0"),
@@ -95,9 +102,9 @@ const BloodPressureAssessment: React.FC = () => {
       male: formData.gender === "male" ? 1 : 0,
       sysBP: formData.sysBP !== "" ? Number.parseFloat(formData.sysBP) : 0,
       diaBP: formData.diaBP !== "" ? Number.parseFloat(formData.diaBP) : 0,
-      PhysActivity: mapPhysActivity(formData.physicalActivity),
+      physicalActivity: mapPhysActivity(formData.physicalActivity),
       DietQuality: mapSaltIntake(formData.saltIntake),
-      Smoker: formData.currentSmoker === "1" ? 1 : 0,
+      currentSmoker: formData.currentSmoker === "1" ? 1 : 0,
       cigsPerDay: formData.cigsPerDay ? Number.parseInt(formData.cigsPerDay) : null,
       SaltIntake: mapSaltIntake(formData.saltIntake),
       FamilyHistoryBP: formData.familyHistory === "yes" ? 1 : 0,
@@ -113,14 +120,12 @@ const BloodPressureAssessment: React.FC = () => {
         alcohol: formData.alcohol || null
       })
     };
-    return payload;
   };
 
   const calculateRisk = async () => {
     setIsLoading(true);
     try {
       const payload = buildPayload();
-      console.log("BP payload ->", payload);
       const resp = await fetch(`${API_BASE}/predict_bp`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
@@ -128,14 +133,12 @@ const BloodPressureAssessment: React.FC = () => {
       });
       if (!resp.ok) {
         const txt = await resp.text().catch(() => "");
-        console.error("predict_bp error response:", txt);
         throw new Error(txt || "server error");
       }
       const data: Result = await resp.json();
       setResult(data);
       toast.success("تم حساب تقييم مخاطر ضغط الدم بنجاح");
     } catch (e) {
-      console.error("calculateRisk error:", e);
       toast.error("حدث خطأ أثناء حساب المخاطر");
     } finally {
       setIsLoading(false);
@@ -163,9 +166,9 @@ const BloodPressureAssessment: React.FC = () => {
       morningReading: "",
       eveningReading: "",
       frequencyCheck: "",
-      saltIntake: "",
-      physicalActivity: "",
-      stress: "",
+      saltIntake: "low",
+      physicalActivity: "moderate",
+      stress: "low",
       smoking: "no",
       alcohol: "none",
       familyHistory: "no",

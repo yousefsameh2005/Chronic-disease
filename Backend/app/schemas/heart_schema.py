@@ -2,27 +2,21 @@ from pydantic import BaseModel
 from typing import Optional
 
 class HeartRecordCreate(BaseModel):
+    bloodPressureSys: float
+    bloodPressureDia: float
+    cholesterolTotal: float
+    hdl: float
+    ldl: float
+    physicalActivity: str
+    diet: str
+    smoking: str
+    stress: str
+    familyHistory: str
     age: int
-    male: int
-    height: float
+    gender: str
     weight: float
-    totChol: float
-    sysBP: float
-    diaBP: float
-    heartRate: float
-    glucose: float
-    education: int
-    currentSmoker: int
-    cigsPerDay: Optional[int] = None
-    BPMeds: int
-    prevalentStroke: int
-    prevalentHyp: int
-    diabetes: int
-    activity_level: int
-    diet_quality: int
-    stress_level: int
-    family_history: int
-    previous_history: int
+    height: float
+    heartConditions: str
     notes: Optional[str] = None
 
 class HeartPredictionResponse(BaseModel):
